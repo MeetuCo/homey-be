@@ -18,4 +18,28 @@ public class ItemEntity {
   // YYYY/MM/DD
   private String expiryDate;
   
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public int getCurrentAmount() {
+    return currentAmount;
+  }
+
+  public void setCurrentAmount(int currentAmount) {
+    this.currentAmount = currentAmount;
+  }
+
+  public String getExpiryDate() {
+    return expiryDate;
+  }
+
+  public void setExpiryDate(String expiryDate) {
+    this.expiryDate = expiryDate;
+  }
+  
 }
