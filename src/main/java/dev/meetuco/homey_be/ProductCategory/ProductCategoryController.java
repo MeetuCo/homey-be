@@ -15,7 +15,7 @@ public class ProductCategoryController {
   private ProductCategoryService productCategoryService;
 
   @GetMapping(produces = "application/json")
-  public List<ProductCategory> getProductCategories(){
+  public List<ProductCategoryEntity> getProductCategories(){
     return productCategoryService.getAllProductCategories();
   }
 }

@@ -8,7 +8,7 @@ public class ProductCategoryService {
   @Autowired
   private ProductCategoryRepository productCategoryRepository;
 
-  protected List<ProductCategory> getAllProductCategories(){
+  protected List<ProductCategoryEntity> getAllProductCategories(){
     return productCategoryRepository.findAll();
   }
 }

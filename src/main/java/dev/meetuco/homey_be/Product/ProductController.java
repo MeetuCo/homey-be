@@ -21,12 +21,12 @@ public class ProductController{
   private ProductRepository masterItemRepository;
 
   @GetMapping(produces = "application/json")
-  public List<Product> getProducts(){
+  public List<ProductEntity> getProducts(){
     return productService.getAllProducts();
   }
 
   @PostMapping(consumes = "application/json")
-  Product newProduct(@RequestBody Product masterItem){
+  ProductEntity newProduct(@RequestBody ProductEntity masterItem){
     return masterItemRepository.save(masterItem);
   }
 }

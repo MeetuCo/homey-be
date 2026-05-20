@@ -9,7 +9,7 @@ public class ProductService {
   @Autowired
   private ProductRepository productRepository;
 
-  protected List<Product> getAllProducts(){
+  protected List<ProductEntity> getAllProducts(){
     return productRepository.findAll();
   }
 }

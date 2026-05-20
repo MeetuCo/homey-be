@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "MasterItem")
 
-public class Product {
+public class ProductEntity {
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Long id;
