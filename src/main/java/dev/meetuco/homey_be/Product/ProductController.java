@@ -1,4 +1,4 @@
-package dev.meetuco.homey_be.MasterItem;
+package dev.meetuco.homey_be.Product;
 
 
 import java.util.List;
@@ -12,21 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/masteritem")
-public class MasterItemController{
+public class ProductController{
 
   @Autowired
-  private MasterItemService masterItemService;
+  private ProductService productService;
 
   @Autowired
-  private MasterItemRepository masterItemRepository;
+  private ProductRepository masterItemRepository;
 
   @GetMapping(produces = "application/json")
-  public List<MasterItem> getMasterItems(){
-    return masterItemService.getAllMasterItems();
+  public List<Product> getProducts(){
+    return productService.getAllProducts();
   }
 
   @PostMapping(consumes = "application/json")
-  MasterItem newMasterItem(@RequestBody MasterItem masterItem){
+  Product newProduct(@RequestBody Product masterItem){
     return masterItemRepository.save(masterItem);
   }
 }

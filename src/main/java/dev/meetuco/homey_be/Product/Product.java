@@ -1,4 +1,4 @@
-package dev.meetuco.homey_be.MasterItem;
+package dev.meetuco.homey_be.Product;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "MasterItem")
 
-public class MasterItem {
+public class Product {
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Long id;
