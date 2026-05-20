@@ -17,8 +17,6 @@ public class ProductController{
   @Autowired
   private ProductService productService;
 
-  @Autowired
-  private ProductRepository masterItemRepository;
 
   @GetMapping(produces = "application/json")
   public List<ProductEntity> getProducts(){
@@ -26,7 +24,7 @@ public class ProductController{
   }
 
   @PostMapping(consumes = "application/json")
-  ProductEntity newProduct(@RequestBody ProductEntity masterItem){
-    return masterItemRepository.save(masterItem);
+  public ProductEntity newProduct(@RequestBody ProductEntity productEntity){
+    return productService.addNewProduct(productEntity);
   }
 }

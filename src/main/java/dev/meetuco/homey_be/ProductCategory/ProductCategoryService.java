@@ -11,4 +11,8 @@ public class ProductCategoryService {
   protected List<ProductCategoryEntity> getAllProductCategories(){
     return productCategoryRepository.findAll();
   }
+
+  protected ProductCategoryEntity addNewProductCategoryEntity(ProductCategoryEntity productCategoryEntity){
+    return productCategoryRepository.save(productCategoryEntity);
+  }
 }

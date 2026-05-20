@@ -12,4 +12,8 @@ public class ProductService {
   protected List<ProductEntity> getAllProducts(){
     return productRepository.findAll();
   }
+
+  protected ProductEntity addNewProduct(ProductEntity productEntity){
+    return productRepository.save(productEntity);
+  }
 }
