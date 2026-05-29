@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/chore")
 public class ChoreController {
+
   @Autowired
-  ChoreService choreService;
+  private ChoreService choreService;
 
   @GetMapping(produces = "application/json")
   public List<ChoreEntity> getChores(){

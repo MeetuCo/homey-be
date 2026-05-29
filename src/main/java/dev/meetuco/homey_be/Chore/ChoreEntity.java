@@ -1,5 +1,6 @@
 package dev.meetuco.homey_be.Chore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Chore")
+@Table(name = "chore")
 public class ChoreEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +22,7 @@ public class ChoreEntity {
   private String lastDoneDate;
 
   // In days
+  @Column(name = "interval_days")
   private int interval;
 
   public Long getId() {

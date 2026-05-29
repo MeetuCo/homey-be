@@ -19,12 +19,12 @@ public class HomeyBeApplication {
 	public CommandLineRunner commandLineRunner(ApplicationContext ctx){
 
 		return args -> {
-			System.out.println("Lets inspect the beans provided by Spring Boot: ");
+			// System.out.println("Lets inspect the beans provided by Spring Boot: ");
 
 			String[] beanNames = ctx.getBeanDefinitionNames();
 			Arrays.sort(beanNames);
 			for (String beanName : beanNames){
-				System.out.println(beanName);
+				// System.out.println(beanName);
 			}
 		};
 	}
