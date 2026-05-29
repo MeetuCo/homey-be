@@ -1,5 +1,7 @@
 package dev.meetuco.homey_be.ProductCategory;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,10 +13,13 @@ import jakarta.persistence.Table;
 public class ProductCategoryEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonProperty(index = 0)
   private Long id;
 
+  @JsonProperty(index = 1)
   private String name;
 
+  @JsonProperty(index = 2)
   private String color; 
 
   public Long getId() {

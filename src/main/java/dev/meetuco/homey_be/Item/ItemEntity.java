@@ -1,22 +1,35 @@
 package dev.meetuco.homey_be.Item;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import dev.meetuco.homey_be.Product.ProductEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Item")
+@Table(name = "item")
 public class ItemEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonProperty(index = 0)
   private Long id;
 
+  @JsonProperty(index = 1)
   private int currentAmount;
 
   // YYYY/MM/DD
+  @JsonProperty(index = 2)
   private String expiryDate;
+
+  @JsonProperty(index = 3)
+  @ManyToOne
+  @JoinColumn(name = "product")
+  private ProductEntity productEntity;
   
   public Long getId() {
     return id;

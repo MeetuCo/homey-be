@@ -1,5 +1,7 @@
 package dev.meetuco.homey_be.Chore;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,13 +14,17 @@ import jakarta.persistence.Table;
 public class ChoreEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonProperty(index = 0)
   private Long id;
 
+  @JsonProperty(index = 1)
   private String name;
 
+  @JsonProperty(index = 2)
   private String[] persons;
 
   // YYYY/MM/DD
+  @JsonProperty(index = 3)
   private String lastDoneDate;
 
   // In days
