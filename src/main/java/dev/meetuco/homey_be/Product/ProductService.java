@@ -1,9 +1,15 @@
 package dev.meetuco.homey_be.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import dev.meetuco.homey_be.ProductCategory.ProductCategoryEntity;
+import dev.meetuco.homey_be.ProductCategory.ProductCategoryRepository;
 
 @Service
 public class ProductService {
@@ -11,11 +17,32 @@ public class ProductService {
   @Autowired
   private ProductRepository productRepository;
 
-  protected List<ProductEntity> getAllProducts(){
-    return productRepository.findAll();
+  @Autowired
+  private ProductCategoryRepository productCategoryRepository;
+
+  protected ResponseEntity<?> getAllProducts(){
+    List<ProductEntity> products = productRepository.findAll();
+
+    for (ProductEntity product : products){
+      Long productCategoryEntityId = product.getProductCategoryEntityId();
+      Optional<ProductCategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
+      productCategoryEntity.ifPresent(product::setProductCategoryEntity);
+    }
+
+    return new ResponseEntity<>(products, HttpStatus.ACCEPTED);
   }
 
-  protected ProductEntity addNewProduct(ProductEntity productEntity){
-    return productRepository.save(productEntity);
+  protected ResponseEntity<?> addNewProduct(ProductEntity productEntity){
+    if (productEntity.getProductCategoryEntityId() == null){
+      productEntity.setProductCategoryEntityId(0L);
+    }
+
+    productRepository.save(productEntity);
+
+    Long productCategoryEntityId = productEntity.getProductCategoryEntityId();
+    Optional<ProductCategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
+    productCategoryEntity.ifPresent(productEntity::setProductCategoryEntity);
+
+    return new ResponseEntity<>(productEntity, HttpStatus.CREATED);
   }
 }

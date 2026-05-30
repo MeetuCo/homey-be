@@ -2,11 +2,13 @@ package dev.meetuco.homey_be.Product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import dev.meetuco.homey_be.ProductCategory.ProductCategoryEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "product")
@@ -19,12 +21,16 @@ public class ProductEntity {
 
   @JsonProperty(index=1)
   private String name;
-
-  @JsonProperty(index=2)
-  private String category;
   
   @JsonProperty(index=3)
   private int targetAmount;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private Long productCategoryEntityId;
+  
+  @Transient
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private ProductCategoryEntity productCategoryEntity;
 
   public Long getId() {
     return id;
@@ -42,14 +48,6 @@ public class ProductEntity {
     this.name = name;
   }
 
-  public String getCategory() {
-    return category;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
   public int getTargetAmount() {
     return targetAmount;
   }
@@ -57,4 +55,21 @@ public class ProductEntity {
   public void setTargetAmount(int targetAmount) {
     this.targetAmount = targetAmount;
   }
+
+  public Long getProductCategoryEntityId() {
+      return productCategoryEntityId;
+  }
+
+  public void setProductCategoryEntityId(Long ProductCategoryEntityId) {
+      this.productCategoryEntityId = ProductCategoryEntityId;
+  }
+
+  public ProductCategoryEntity getProductCategoryEntity() {
+    return productCategoryEntity;
+  }
+
+  public void setProductCategoryEntity(ProductCategoryEntity productCategoryEntity) {
+    this.productCategoryEntity = productCategoryEntity;
+  }
+
 }

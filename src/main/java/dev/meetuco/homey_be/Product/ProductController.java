@@ -1,9 +1,7 @@
 package dev.meetuco.homey_be.Product;
 
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +17,12 @@ public class ProductController{
 
 
   @GetMapping(produces = "application/json")
-  public List<ProductEntity> getProducts(){
+  public ResponseEntity<?> getProducts(){
     return productService.getAllProducts();
   }
 
   @PostMapping(consumes = "application/json")
-  public ProductEntity newProduct(@RequestBody ProductEntity productEntity){
+  public ResponseEntity<?> newProduct(@RequestBody ProductEntity productEntity){
     return productService.addNewProduct(productEntity);
   }
 }
