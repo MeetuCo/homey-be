@@ -1,12 +1,14 @@
 package dev.meetuco.homey_be.Item;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import dev.meetuco.homey_be.Product.ProductEntity;
 import dev.meetuco.homey_be.Product.ProductRepository;
 
 @Service
@@ -23,6 +25,13 @@ public class ItemService {
 
   protected ResponseEntity<List<ItemEntity>> getAllItems(){
     List<ItemEntity> items = itemEntityRepository.findAll();
+
+    for (ItemEntity item : items){
+      Long productId = item.getProductId();
+      Optional<ProductEntity> product = productRepository.findById(productId);
+      product.ifPresent(item::setProductEntity);
+    }
+    
     return new ResponseEntity<>(items, HttpStatus.ACCEPTED);
   }
 
