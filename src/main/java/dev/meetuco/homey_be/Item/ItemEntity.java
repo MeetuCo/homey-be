@@ -2,13 +2,10 @@ package dev.meetuco.homey_be.Item;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import dev.meetuco.homey_be.Product.ProductEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,10 +23,7 @@ public class ItemEntity {
   @JsonProperty(index = 2)
   private String expiryDate;
 
-  @JsonProperty(index = 3)
-  @ManyToOne
-  @JoinColumn(name = "product")
-  private ProductEntity productEntity;
+  private Long productId;
   
   public Long getId() {
     return id;
@@ -53,6 +47,14 @@ public class ItemEntity {
 
   public void setExpiryDate(String expiryDate) {
     this.expiryDate = expiryDate;
+  }
+
+  public Long getProductId() {
+    return productId;
+  }
+
+  public void setProductId(Long productId){
+    this.productId = productId;
   }
   
 }
