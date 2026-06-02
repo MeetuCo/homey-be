@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/category")
-public class ProductCategoryController {
+public class CategoryController {
   
   @Autowired
-  private ProductCategoryService productCategoryService;
+  private CategoryService categoryService;
 
   @GetMapping(produces = "application/json")
-  public List<ProductCategoryEntity> getProductCategories(){
-    return productCategoryService.getAllProductCategories();
+  public List<CategoryEntity> getCategories(){
+    return categoryService.getAllCategories();
   }
 
   @PostMapping(consumes = "application/json")
-  public ProductCategoryEntity newProductCategoryEntity(@RequestBody ProductCategoryEntity productCategoryEntity){
-    return productCategoryService.addNewProductCategoryEntity(productCategoryEntity);
+  public CategoryEntity newCategoryEntity(@RequestBody CategoryEntity productCategoryEntity){
+    return categoryService.addNewCategoryEntity(productCategoryEntity);
   }
 }

@@ -2,7 +2,7 @@ package dev.meetuco.homey_be.Product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import dev.meetuco.homey_be.ProductCategory.ProductCategoryEntity;
+import dev.meetuco.homey_be.ProductCategory.CategoryEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +30,7 @@ public class ProductEntity {
   
   @Transient
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private ProductCategoryEntity productCategoryEntity;
+  private CategoryEntity productCategoryEntity;
 
   public Long getId() {
     return id;
@@ -64,11 +64,11 @@ public class ProductEntity {
       this.productCategoryEntityId = ProductCategoryEntityId;
   }
 
-  public ProductCategoryEntity getProductCategoryEntity() {
+  public CategoryEntity getProductCategoryEntity() {
     return productCategoryEntity;
   }
 
-  public void setProductCategoryEntity(ProductCategoryEntity productCategoryEntity) {
+  public void setProductCategoryEntity(CategoryEntity productCategoryEntity) {
     this.productCategoryEntity = productCategoryEntity;
   }
 

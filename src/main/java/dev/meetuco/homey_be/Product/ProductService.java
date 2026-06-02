@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import dev.meetuco.homey_be.ProductCategory.ProductCategoryEntity;
-import dev.meetuco.homey_be.ProductCategory.ProductCategoryRepository;
+import dev.meetuco.homey_be.ProductCategory.CategoryEntity;
+import dev.meetuco.homey_be.ProductCategory.CategoryRepository;
 
 @Service
 public class ProductService {
@@ -18,14 +18,14 @@ public class ProductService {
   private ProductRepository productRepository;
 
   @Autowired
-  private ProductCategoryRepository productCategoryRepository;
+  private CategoryRepository productCategoryRepository;
 
   protected ResponseEntity<?> getAllProducts(){
     List<ProductEntity> products = productRepository.findAll();
 
     for (ProductEntity product : products){
       Long productCategoryEntityId = product.getProductCategoryEntityId();
-      Optional<ProductCategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
+      Optional<CategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
       productCategoryEntity.ifPresent(product::setProductCategoryEntity);
     }
 
@@ -40,7 +40,7 @@ public class ProductService {
     productRepository.save(productEntity);
 
     Long productCategoryEntityId = productEntity.getProductCategoryEntityId();
-    Optional<ProductCategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
+    Optional<CategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
     productCategoryEntity.ifPresent(productEntity::setProductCategoryEntity);
 
     return new ResponseEntity<>(productEntity, HttpStatus.CREATED);
