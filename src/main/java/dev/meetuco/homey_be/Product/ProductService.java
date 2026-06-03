@@ -18,31 +18,42 @@ public class ProductService {
   private ProductRepository productRepository;
 
   @Autowired
-  private CategoryRepository productCategoryRepository;
+  private CategoryRepository categoryRepository;
 
   protected ResponseEntity<?> getAllProducts(){
     List<ProductEntity> products = productRepository.findAll();
 
     for (ProductEntity product : products){
-      Long productCategoryEntityId = product.getProductCategoryEntityId();
-      Optional<CategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
-      productCategoryEntity.ifPresent(product::setProductCategoryEntity);
+      Long categoryId = product.getCategoryEntityId();
+
+      if (categoryExists(categoryId)){
+        product.setCategoryEntity(categoryRepository.findById(categoryId));
+      }
+      else{
+        product.setCategoryEntity(categoryRepository.findById(0L));
+        product.setCategoryEntityId(0L);
+        productRepository.save(product);
+      }
     }
 
-    return new ResponseEntity<>(products, HttpStatus.ACCEPTED);
+    return new ResponseEntity<>(products, HttpStatus.OK);
   }
 
   protected ResponseEntity<?> addNewProduct(ProductEntity productEntity){
-    if (productEntity.getProductCategoryEntityId() == null){
-      productEntity.setProductCategoryEntityId(0L);
+    Long id = Optional.ofNullable(productEntity.getCategoryEntityId()).orElse(0L);
+
+    if (categoryExists(id) == false){
+      productEntity.setCategoryEntityId(0L);
     }
 
     productRepository.save(productEntity);
+    Optional<CategoryEntity> categoryEntity = categoryRepository.findById(productEntity.getCategoryEntityId());
+    productEntity.setCategoryEntity(categoryEntity);
+    return new ResponseEntity<>(productEntity, HttpStatus.OK);
+  }
 
-    Long productCategoryEntityId = productEntity.getProductCategoryEntityId();
-    Optional<CategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
-    productCategoryEntity.ifPresent(productEntity::setProductCategoryEntity);
-
-    return new ResponseEntity<>(productEntity, HttpStatus.CREATED);
+  private boolean categoryExists(Long id){
+    Optional<CategoryEntity> category = categoryRepository.findById(id);
+    return category.isPresent();
   }
 }

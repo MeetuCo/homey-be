@@ -1,5 +1,7 @@
 package dev.meetuco.homey_be.Item;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import dev.meetuco.homey_be.Product.ProductEntity;
@@ -26,11 +28,11 @@ public class ItemEntity {
   private String expiryDate;
 
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  private Long productId;
+  private Long productEntityId;
 
   @Transient
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private ProductEntity productEntity;
+  private Optional<ProductEntity> productEntity;
   
   public Long getId() {
     return id;
@@ -56,19 +58,19 @@ public class ItemEntity {
     this.expiryDate = expiryDate;
   }
 
-  public Long getProductId() {
-    return productId;
+  public Long getProductEntityId() {
+    return productEntityId;
   }
 
-  public void setProductId(Long productId){
-    this.productId = productId;
+  public void setProductEntityId(Long productId){
+    this.productEntityId = productId;
   }
 
-  public ProductEntity getProductEntity() {
+  public Optional<ProductEntity> getProductEntity() {
     return productEntity;
   }
 
-  public void setProductEntity(ProductEntity productEntity) {
+  public void setProductEntity(Optional<ProductEntity> productEntity) {
     this.productEntity = productEntity;
   }
   

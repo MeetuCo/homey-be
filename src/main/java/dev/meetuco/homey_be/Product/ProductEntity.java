@@ -1,5 +1,7 @@
 package dev.meetuco.homey_be.Product;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import dev.meetuco.homey_be.ProductCategory.CategoryEntity;
@@ -26,11 +28,11 @@ public class ProductEntity {
   private int targetAmount;
 
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  private Long productCategoryEntityId;
+  private Long categoryEntityId;
   
   @Transient
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  private CategoryEntity productCategoryEntity;
+  private Optional<CategoryEntity> categoryEntity;
 
   public Long getId() {
     return id;
@@ -56,20 +58,19 @@ public class ProductEntity {
     this.targetAmount = targetAmount;
   }
 
-  public Long getProductCategoryEntityId() {
-      return productCategoryEntityId;
+  public Long getCategoryEntityId() {
+      return categoryEntityId;
   }
 
-  public void setProductCategoryEntityId(Long ProductCategoryEntityId) {
-      this.productCategoryEntityId = ProductCategoryEntityId;
+  public void setCategoryEntityId(Long categoryEntityId) {
+      this.categoryEntityId = categoryEntityId;
   }
 
-  public CategoryEntity getProductCategoryEntity() {
-    return productCategoryEntity;
+  public Optional<CategoryEntity> getCategoryEntity() {
+    return categoryEntity;
   }
 
-  public void setProductCategoryEntity(CategoryEntity productCategoryEntity) {
-    this.productCategoryEntity = productCategoryEntity;
+  public void setCategoryEntity(Optional<CategoryEntity> categoryEntity){
+    this.categoryEntity = categoryEntity;
   }
-
 }

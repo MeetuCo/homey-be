@@ -10,13 +10,11 @@ import org.springframework.stereotype.Service;
 
 import dev.meetuco.homey_be.Product.ProductEntity;
 import dev.meetuco.homey_be.Product.ProductRepository;
-import dev.meetuco.homey_be.ProductCategory.CategoryEntity;
 import dev.meetuco.homey_be.ProductCategory.CategoryRepository;
 
 @Service
 public class ItemService {
 
-  private final String nullProductId = "productId is required";
   private final String invalidProduct = "Product id %s is invalid";
 
   @Autowired
@@ -24,48 +22,53 @@ public class ItemService {
 
   @Autowired
   ProductRepository productEntityRepository;
-  
+
   @Autowired
-  CategoryRepository productCategoryRepository;
+  CategoryRepository categoryRepository;
 
   protected ResponseEntity<List<ItemEntity>> getAllItems(){
     List<ItemEntity> items = itemEntityRepository.findAll();
 
     for (ItemEntity item : items){
-      Long productId = item.getProductId();
-      Optional<ProductEntity> product = productEntityRepository.findById(productId);
-      product.ifPresent(item::setProductEntity);
+      Long productId = item.getProductEntityId();
 
-      Long productCategoryEntityId = item.getProductEntity().getProductCategoryEntityId();
-      Optional<CategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
-      productCategoryEntity.ifPresent(product.get()::setProductCategoryEntity);
+      Optional<ProductEntity> product = productEntityRepository.findById(productId);
+      if (product.isEmpty()) {
+        // TODO: return empty product or error of some sort
+        item.setProductEntityId(0L);
+      }
+      else{
+        ProductEntity productEntity = product.get();
+
+        Long categoryId = productEntity.getCategoryEntityId();
+        if (categoryId == null) {
+          categoryId = 0L;
+        }
+
+        productEntity.setCategoryEntity(categoryRepository.findById(categoryId));
+        item.setProductEntity(product);
+      }
     }
 
-    return new ResponseEntity<>(items, HttpStatus.ACCEPTED);
+    return new ResponseEntity<>(items, HttpStatus.OK);
   }
 
   protected ResponseEntity<?> addNewItem(ItemEntity itemEntity){
-    Long productId = itemEntity.getProductId();
-    
-    if (productId == null) {
-      return new ResponseEntity<>(nullProductId, HttpStatus.BAD_REQUEST);
-    }
+    Long productId = itemEntity.getProductEntityId();
 
-    if (productEntityRepository.findById(productId).isEmpty()) {
+    if (productExists(productId) == false){
       String invalidProductFormatted = invalidProduct.formatted(productId);
       return new ResponseEntity<>(invalidProductFormatted, HttpStatus.BAD_REQUEST);
     }
 
     itemEntityRepository.save(itemEntity);
-
-    Long productEntityId = itemEntity.getProductId();
-    Optional<ProductEntity> productEntity = productEntityRepository.findById(productEntityId);
-    productEntity.ifPresent(itemEntity::setProductEntity);
-
-    Long productCategoryEntityId = itemEntity.getProductEntity().getProductCategoryEntityId();
-    Optional<CategoryEntity> productCategoryEntity = productCategoryRepository.findById(productCategoryEntityId);
-    productCategoryEntity.ifPresent(productEntity.get()::setProductCategoryEntity);
-
-    return new ResponseEntity<>(itemEntity, HttpStatus.CREATED);
+    Optional<ProductEntity> productEntity = productEntityRepository.findById(itemEntity.getProductEntityId());
+    itemEntity.setProductEntity(productEntity);
+    return new ResponseEntity<>(itemEntity, HttpStatus.OK);
   }
-} 
+
+  private boolean productExists(Long id){
+    Optional<ProductEntity> productEntity = productEntityRepository.findById(id);
+    return productEntity.isPresent();
+  }
+}
