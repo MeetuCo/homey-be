@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import dev.meetuco.homey_be.Category.CategoryRepository;
 import dev.meetuco.homey_be.Product.ProductEntity;
 import dev.meetuco.homey_be.Product.ProductRepository;
-import dev.meetuco.homey_be.ProductCategory.CategoryRepository;
 
 @Service
 public class ItemService {

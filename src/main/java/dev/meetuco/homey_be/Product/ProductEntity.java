@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import dev.meetuco.homey_be.ProductCategory.CategoryEntity;
+import dev.meetuco.homey_be.Category.CategoryEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

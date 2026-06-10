@@ -1,4 +1,4 @@
-package dev.meetuco.homey_be.ProductCategory;
+package dev.meetuco.homey_be.Category;
 
 import java.util.List;
 

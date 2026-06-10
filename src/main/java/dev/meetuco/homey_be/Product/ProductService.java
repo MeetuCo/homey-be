@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import dev.meetuco.homey_be.ProductCategory.CategoryEntity;
-import dev.meetuco.homey_be.ProductCategory.CategoryRepository;
+import dev.meetuco.homey_be.Category.CategoryEntity;
+import dev.meetuco.homey_be.Category.CategoryRepository;
 
 @Service
 public class ProductService {
