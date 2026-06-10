@@ -32,8 +32,8 @@ public class ProductService {
         product.setCategoryEntity(categoryRepository.findById(categoryId));
       }
       else{
-        product.setCategoryEntity(categoryRepository.findById(0L));
-        product.setCategoryEntityId(0L);
+        product.setCategoryEntity(categoryRepository.findById(1L));
+        product.setCategoryEntityId(1L);
         productRepository.save(product);
       }
     }
@@ -54,19 +54,30 @@ public class ProductService {
     return new ResponseEntity<>(productEntity, HttpStatus.OK);
   }
 
-  protected ResponseEntity<?> updateProduct(ProductEntity productEntity){
+  protected ResponseEntity<?> updateProduct(Long id, ProductEntity productEntity){
     try {
-      productRepository.save(productEntity);
-      return new ResponseEntity<>(productEntity, HttpStatus.OK);
+      ProductEntity existingProductEntity = productRepository.findById(id).get();
+      existingProductEntity.setCategoryEntityId(productEntity.getCategoryEntityId());
+      existingProductEntity.setName(productEntity.getName());
+      existingProductEntity.setTargetAmount(productEntity.getTargetAmount());
+      productRepository.save(existingProductEntity);
+      return new ResponseEntity<>(existingProductEntity, HttpStatus.OK);
     } catch (Exception e) {
-      String productNotFoundFormatted = productNotFound.formatted(productEntity.getId());
+      String productNotFoundFormatted = productNotFound.formatted(id);
       return new ResponseEntity<>(productNotFoundFormatted, HttpStatus.NOT_FOUND);
     }
   }
 
-  protected ResponseEntity<?> deleteProduct(ProductEntity productEntity){
-    productRepository.delete(productEntity);
-    return new ResponseEntity<>(productEntity, HttpStatus.OK);
+  protected ResponseEntity<?> deleteProduct(Long id){
+    try {
+      ProductEntity productEntity = productRepository.findById(id).get();
+      productRepository.deleteById(id);
+      return new ResponseEntity<>(productEntity, HttpStatus.OK);
+        
+    } catch (Exception e) {
+      String productNotFoundFormatted = productNotFound.formatted(id);
+      return new ResponseEntity<>(productNotFoundFormatted, HttpStatus.NOT_FOUND);
+    }
   }
  
   private boolean categoryExists(Long id){

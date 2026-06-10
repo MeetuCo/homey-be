@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,13 +29,13 @@ public class ProductController{
     return productService.addNewProduct(productEntity);
   }
 
-  @PutMapping(consumes = "application/json")
-  public ResponseEntity<?> updateProduct(@RequestBody ProductEntity productEntity){
-    return productService.updateProduct(productEntity);
+  @PutMapping("/{id}")
+  public ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestBody ProductEntity productEntity){
+    return productService.updateProduct(id, productEntity);
   }
 
-  @DeleteMapping
-  public ResponseEntity<?> deleteProduct(@RequestBody ProductEntity productEntity){
-    return productService.deleteProduct(productEntity);
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id){
+    return productService.deleteProduct(id);
   }
 }

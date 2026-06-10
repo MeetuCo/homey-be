@@ -1,11 +1,10 @@
 package dev.meetuco.homey_be.Category;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,22 +19,22 @@ public class CategoryController {
   private CategoryService categoryService;
 
   @GetMapping(produces = "application/json")
-  public List<CategoryEntity> getCategories(){
+  public ResponseEntity<?> getCategories(){
     return categoryService.getAllCategories();
   }
 
   @PostMapping(consumes = "application/json")
-  public CategoryEntity newCategoryEntity(@RequestBody CategoryEntity categoryEntity){
+  public ResponseEntity<?> newCategoryEntity(@RequestBody CategoryEntity categoryEntity){
     return categoryService.addNewCategoryEntity(categoryEntity);
   }
 
-  @PutMapping(consumes = "application/json")
-  public ResponseEntity<?> updateCategoryEntity(@RequestBody CategoryEntity categoryEntity){
-    return categoryService.updateCategoryEntity(categoryEntity);
+  @PutMapping("/{id}")
+  public ResponseEntity<?> updateCategoryEntity(@PathVariable("id") Long id, @RequestBody CategoryEntity categoryEntity){
+    return categoryService.updateCategoryEntity(id, categoryEntity);
   }
 
-  @DeleteMapping
-  public ResponseEntity<?> deleteCategoryEntity(@RequestBody CategoryEntity categoryEntity){
-    return categoryService.deleteCategoryEntity(categoryEntity);
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteCategoryEntity(@PathVariable("id") Long id){
+    return categoryService.deleteCategoryEntity(id);
   }
 }

@@ -1,89 +1,52 @@
 package dev.meetuco.homey_be.Item;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import dev.meetuco.homey_be.Category.CategoryRepository;
-import dev.meetuco.homey_be.Product.ProductEntity;
-import dev.meetuco.homey_be.Product.ProductRepository;
-
 @Service
 public class ItemService {
 
-  private final String invalidProduct = "Product id %s is invalid";
+  private final String itemNotFound = "Item id %s not found";
 
   @Autowired
-  ItemRepository itemEntityRepository;
+  private ItemRepository itemRepository;
 
-  @Autowired
-  ProductRepository productEntityRepository;
-
-  @Autowired
-  CategoryRepository categoryRepository;
-
-  protected ResponseEntity<List<ItemEntity>> getAllItems(){
-    List<ItemEntity> items = itemEntityRepository.findAll();
-
-    for (ItemEntity item : items){
-      Long productId = item.getProductEntityId();
-
-      Optional<ProductEntity> product = productEntityRepository.findById(productId);
-      if (product.isEmpty()) {
-        // TODO: return empty product or error of some sort
-        item.setProductEntityId(0L);
-      }
-      else{
-        ProductEntity productEntity = product.get();
-
-        Long categoryId = productEntity.getCategoryEntityId();
-        if (categoryId == null) {
-          categoryId = 0L;
-        }
-
-        productEntity.setCategoryEntity(categoryRepository.findById(categoryId));
-        item.setProductEntity(product);
-      }
-    }
-
+  protected ResponseEntity<?> getAllItems(){
+    List<ItemEntity> items = itemRepository.findAll();
     return new ResponseEntity<>(items, HttpStatus.OK);
   }
 
   protected ResponseEntity<?> addNewItem(ItemEntity itemEntity){
-    Long productId = itemEntity.getProductEntityId();
-
-    if (productExists(productId) == false){
-      String invalidProductFormatted = invalidProduct.formatted(productId);
-      return new ResponseEntity<>(invalidProductFormatted, HttpStatus.BAD_REQUEST);
-    }
-
-    itemEntityRepository.save(itemEntity);
-    Optional<ProductEntity> productEntity = productEntityRepository.findById(itemEntity.getProductEntityId());
-    itemEntity.setProductEntity(productEntity);
+    itemRepository.save(itemEntity);
     return new ResponseEntity<>(itemEntity, HttpStatus.OK);
   }
 
-  protected ResponseEntity<?> updateItem(ItemEntity itemEntity){
+  protected ResponseEntity<?> updateItem(Long id, ItemEntity itemEntity){
     try {
-      itemEntityRepository.save(itemEntity);
+      ItemEntity existingItemEntity = itemRepository.findById(id).get();
+      existingItemEntity.setCurrentAmount(itemEntity.getCurrentAmount());
+      existingItemEntity.setExpiryDate(itemEntity.getExpiryDate());
+      existingItemEntity.setProductEntityId(itemEntity.getProductEntityId());
+      itemRepository.save(existingItemEntity);
+      return new ResponseEntity<>(existingItemEntity, HttpStatus.OK);
+    } catch (Exception e) {
+      String itemNotFoundFormatted = itemNotFound.formatted(id);
+      return new ResponseEntity<>(itemNotFoundFormatted, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  protected ResponseEntity<?> deleteItem(Long id){
+    try {
+      ItemEntity itemEntity = itemRepository.findById(id).get();
+      itemRepository.deleteById(id);
       return new ResponseEntity<>(itemEntity, HttpStatus.OK);
     } catch (Exception e) {
-      String invalidProductFormatted = invalidProduct.formatted(itemEntity.getProductEntityId());
-      return new ResponseEntity<>(invalidProductFormatted, HttpStatus.NOT_FOUND);
+      String itemNotFoundFormatted = itemNotFound.formatted(id);
+      return new ResponseEntity<>(itemNotFoundFormatted, HttpStatus.NOT_FOUND);
     }
-  }
-
-  protected ResponseEntity<?> deleteItem(ItemEntity itemEntity){
-    itemEntityRepository.delete(itemEntity);
-    return new ResponseEntity<>(itemEntity, HttpStatus.OK);
-  }
-
-  private boolean productExists(Long id){
-    Optional<ProductEntity> productEntity = productEntityRepository.findById(id);
-    return productEntity.isPresent();
   }
 }

@@ -1,30 +1,31 @@
 package dev.meetuco.homey_be;
 
-import java.util.Arrays;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+
+import dev.meetuco.homey_be.Category.CategoryEntity;
+import dev.meetuco.homey_be.Category.CategoryRepository;
 
 @SpringBootApplication
 public class HomeyBeApplication {
+	private static final String defaultCategoryName = "Default";
+	private static final String defaultCategoryColor = "#ffffff";
 
 	public static void main(String[] args) {
 		SpringApplication.run(HomeyBeApplication.class, args);
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(ApplicationContext ctx){
+	public CommandLineRunner seedDefaultCategory(CategoryRepository categoryRepository){
 
 		return args -> {
-			// System.out.println("Lets inspect the beans provided by Spring Boot: ");
-
-			String[] beanNames = ctx.getBeanDefinitionNames();
-			Arrays.sort(beanNames);
-			for (String beanName : beanNames){
-				// System.out.println(beanName);
+			if (!categoryRepository.existsByNameIgnoreCase(defaultCategoryName)) {
+				CategoryEntity defaultCategory = new CategoryEntity();
+				defaultCategory.setName(defaultCategoryName);
+				defaultCategory.setColor(defaultCategoryColor);
+				categoryRepository.save(defaultCategory);
 			}
 		};
 	}

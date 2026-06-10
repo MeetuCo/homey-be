@@ -9,28 +9,52 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryService {
+  private static final String defaultCategoryName = "Default";
+  private final String categoryNotFound = "Category id %s not found";
+
   @Autowired
   private CategoryRepository categoryRepository;
 
-  protected List<CategoryEntity> getAllCategories(){
-    return categoryRepository.findAll();
+  protected ResponseEntity<?> getAllCategories(){
+    List<CategoryEntity> categories = categoryRepository.findAll();
+    return new ResponseEntity<>(categories, HttpStatus.OK);
   }
 
-  protected CategoryEntity addNewCategoryEntity(CategoryEntity categoryEntity){
-    return categoryRepository.save(categoryEntity);
+  protected ResponseEntity<?> addNewCategoryEntity(CategoryEntity categoryEntity){
+    categoryRepository.save(categoryEntity);
+    return new ResponseEntity<>(categoryEntity, HttpStatus.OK);
   }
 
-  protected ResponseEntity<?> updateCategoryEntity(CategoryEntity categoryEntity){
+  protected ResponseEntity<?> updateCategoryEntity(Long id, CategoryEntity categoryEntity){
+    if (categoryEntity.getName() != null && defaultCategoryName.equalsIgnoreCase(categoryEntity.getName())){
+      return new ResponseEntity<>("Cannot update DEFAULT category", HttpStatus.FORBIDDEN);
+    }
+
     try {
-      categoryRepository.save(categoryEntity);
-      return new ResponseEntity<>(categoryEntity, HttpStatus.OK);
+      CategoryEntity existingCategoryEntity = categoryRepository.findById(id).get();
+      existingCategoryEntity.setName(categoryEntity.getName());
+      existingCategoryEntity.setColor(categoryEntity.getColor());
+      categoryRepository.save(existingCategoryEntity);
+      return new ResponseEntity<>(existingCategoryEntity, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<>(categoryEntity, HttpStatus.NOT_FOUND);
+      String categoryNotFoundFormatted = categoryNotFound.formatted(id);
+      return new ResponseEntity<>(categoryNotFoundFormatted, HttpStatus.NOT_FOUND);
     }
   }
 
-  protected ResponseEntity<?> deleteCategoryEntity(CategoryEntity categoryEntity){
-    categoryRepository.delete(categoryEntity);
-    return new ResponseEntity<>(categoryEntity, HttpStatus.OK);
+  protected ResponseEntity<?> deleteCategoryEntity(Long id){
+    try {
+      CategoryEntity categoryEntity = categoryRepository.findById(id).get();
+
+      if (categoryEntity.getName() != null && defaultCategoryName.equalsIgnoreCase(categoryEntity.getName())){
+        return new ResponseEntity<>("Cannot delete DEFAULT category", HttpStatus.FORBIDDEN);
+      }
+
+      categoryRepository.deleteById(id);
+      return new ResponseEntity<>(categoryEntity, HttpStatus.OK);
+    } catch (Exception e) {
+      String categoryNotFoundFormatted = categoryNotFound.formatted(id);
+      return new ResponseEntity<>(categoryNotFoundFormatted, HttpStatus.NOT_FOUND);
+    }
   }
 }
