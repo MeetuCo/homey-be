@@ -42,10 +42,10 @@ public class ProductService {
   }
 
   protected ResponseEntity<?> addNewProduct(ProductEntity productEntity){
-    Long id = Optional.ofNullable(productEntity.getCategoryEntityId()).orElse(0L);
+    Long id = Optional.ofNullable(productEntity.getCategoryEntityId()).orElse(1L);
 
     if (categoryExists(id) == false){
-      productEntity.setCategoryEntityId(0L);
+      productEntity.setCategoryEntityId(1L);
     }
 
     productRepository.save(productEntity);
