@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import dev.meetuco.homey_be.Category.CategoryEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,8 +25,9 @@ public class ProductEntity {
   @JsonProperty(index=1)
   private String name;
   
+  @Column(nullable = true)
   @JsonProperty(index=3)
-  private int targetAmount;
+  private Integer targetAmount;
 
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private Long categoryEntityId;
@@ -50,11 +52,11 @@ public class ProductEntity {
     this.name = name;
   }
 
-  public int getTargetAmount() {
-    return targetAmount;
+  public Optional<Integer> getTargetAmount() {
+    return Optional.ofNullable(targetAmount);
   }
 
-  public void setTargetAmount(int targetAmount) {
+  public void setTargetAmount(Integer targetAmount) {
     this.targetAmount = targetAmount;
   }
 

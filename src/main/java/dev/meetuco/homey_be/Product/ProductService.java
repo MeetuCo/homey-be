@@ -59,7 +59,13 @@ public class ProductService {
       ProductEntity existingProductEntity = productRepository.findById(id).get();
       existingProductEntity.setCategoryEntityId(productEntity.getCategoryEntityId());
       existingProductEntity.setName(productEntity.getName());
-      existingProductEntity.setTargetAmount(productEntity.getTargetAmount());
+      Optional<Integer> targetAmt = productEntity.getTargetAmount();
+      if (targetAmt.isPresent()){
+        existingProductEntity.setTargetAmount(targetAmt.get());
+      }
+      else{
+        existingProductEntity.setTargetAmount(null);
+      }
       productRepository.save(existingProductEntity);
       return new ResponseEntity<>(existingProductEntity, HttpStatus.OK);
     } catch (Exception e) {
