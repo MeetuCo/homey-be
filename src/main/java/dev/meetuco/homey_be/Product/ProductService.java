@@ -14,6 +14,8 @@ import dev.meetuco.homey_be.ProductCategory.CategoryRepository;
 @Service
 public class ProductService {
 
+  private final String productNotFound = "Product id %s not found";
+
   @Autowired
   private ProductRepository productRepository;
 
@@ -52,6 +54,21 @@ public class ProductService {
     return new ResponseEntity<>(productEntity, HttpStatus.OK);
   }
 
+  protected ResponseEntity<?> updateProduct(ProductEntity productEntity){
+    try {
+      productRepository.save(productEntity);
+      return new ResponseEntity<>(productEntity, HttpStatus.OK);
+    } catch (Exception e) {
+      String productNotFoundFormatted = productNotFound.formatted(productEntity.getId());
+      return new ResponseEntity<>(productNotFoundFormatted, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  protected ResponseEntity<?> deleteProduct(ProductEntity productEntity){
+    productRepository.delete(productEntity);
+    return new ResponseEntity<>(productEntity, HttpStatus.OK);
+  }
+ 
   private boolean categoryExists(Long id){
     Optional<CategoryEntity> category = categoryRepository.findById(id);
     return category.isPresent();
