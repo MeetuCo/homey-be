@@ -67,6 +67,21 @@ public class ItemService {
     return new ResponseEntity<>(itemEntity, HttpStatus.OK);
   }
 
+  protected ResponseEntity<?> updateItem(ItemEntity itemEntity){
+    try {
+      itemEntityRepository.save(itemEntity);
+      return new ResponseEntity<>(itemEntity, HttpStatus.OK);
+    } catch (Exception e) {
+      String invalidProductFormatted = invalidProduct.formatted(itemEntity.getProductEntityId());
+      return new ResponseEntity<>(invalidProductFormatted, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  protected ResponseEntity<?> deleteItem(ItemEntity itemEntity){
+    itemEntityRepository.delete(itemEntity);
+    return new ResponseEntity<>(itemEntity, HttpStatus.OK);
+  }
+
   private boolean productExists(Long id){
     Optional<ProductEntity> productEntity = productEntityRepository.findById(id);
     return productEntity.isPresent();
