@@ -1,5 +1,8 @@
 package dev.meetuco.homey_be.Item;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,26 +33,36 @@ public class ItemService {
   protected ResponseEntity<?> getAllItems(){
     List<ItemEntity> items = itemRepository.findAll();
     for (ItemEntity item : items){
-      Long productEntityId = item.getProductEntityId();
-      
-      if (productRepository.existsById(productEntityId)){
-        ProductEntity productEntity = productRepository.findById(productEntityId).get();
-        Optional<CategoryEntity> categoryEntity = categoryRepository.findById(productEntity.getCategoryEntityId());
-        if (categoryEntity.isEmpty()) {
-          categoryEntity = categoryRepository.findById(1L);
-        }
-        productEntity.setCategoryEntity(categoryEntity);
-        item.setProductEntity(Optional.of(productEntity));
-      }
-      else{
-        itemRepository.delete(item);
-      }
+      this.setProductAndCategory(item);
     }
     return new ResponseEntity<>(items, HttpStatus.OK);
   }
 
+  protected ResponseEntity<?> getAllExpiringItems(String expiring){
+    try { 
+      int expiringInDays = Integer.parseInt(expiring);
+
+      LocalDate futureDate = LocalDate.now().plusDays(expiringInDays);
+
+      List<ItemEntity> items = itemRepository.findAll();
+      ArrayList<ItemEntity> expiringSoonItems = new ArrayList<>();
+
+      for (ItemEntity item : items){
+        if (this.expiringSoon(item, futureDate)){
+          this.setProductAndCategory(item);
+          expiringSoonItems.add(item);
+        }
+      }
+
+      return new ResponseEntity<>(expiringSoonItems, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+  }
+
   protected ResponseEntity<?> addNewItem(ItemEntity itemEntity){
     itemRepository.save(itemEntity);
+    this.setProductAndCategory(itemEntity);
     return new ResponseEntity<>(itemEntity, HttpStatus.OK);
   }
 
@@ -75,6 +88,30 @@ public class ItemService {
     } catch (Exception e) {
       String itemNotFoundFormatted = itemNotFound.formatted(id);
       return new ResponseEntity<>(itemNotFoundFormatted, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  private boolean expiringSoon(ItemEntity item, LocalDate futureDate){
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDate expiringDate = LocalDate.parse(item.getExpiryDate(), formatter);
+
+    return expiringDate.isBefore(futureDate);
+  }
+
+  private void setProductAndCategory(ItemEntity item){
+    Long productEntityId = item.getProductEntityId();
+      
+    if (productRepository.existsById(productEntityId)){
+      ProductEntity productEntity = productRepository.findById(productEntityId).get();
+      Optional<CategoryEntity> categoryEntity = categoryRepository.findById(productEntity.getCategoryEntityId());
+      if (categoryEntity.isEmpty()) {
+        categoryEntity = categoryRepository.findById(1L);
+      }
+      productEntity.setCategoryEntity(categoryEntity);
+      item.setProductEntity(Optional.of(productEntity));
+    }
+    else{
+      itemRepository.delete(item);
     }
   }
 }

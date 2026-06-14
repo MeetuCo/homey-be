@@ -23,7 +23,6 @@ public class ItemEntity {
   @JsonProperty(index = 1)
   private int currentAmount;
 
-  // YYYY/MM/DD
   @JsonProperty(index = 2)
   private String expiryDate;
 

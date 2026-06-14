@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,8 +19,13 @@ public class ItemController {
   private ItemService itemService;
   
   @GetMapping(produces = "application/json")
-  public ResponseEntity<?> getItems(){
-    return itemService.getAllItems();
+  public ResponseEntity<?> getItems(@RequestParam(required = false) String expiring){
+    if (expiring == null){
+      return itemService.getAllItems();
+    }
+    else{
+      return itemService.getAllExpiringItems(expiring);
+    }
   }
 
   @PostMapping(consumes = "application/json")
