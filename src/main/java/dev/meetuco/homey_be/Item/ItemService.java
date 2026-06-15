@@ -61,9 +61,21 @@ public class ItemService {
   }
 
   protected ResponseEntity<?> addNewItem(ItemEntity itemEntity){
-    itemRepository.save(itemEntity);
-    this.setProductAndCategory(itemEntity);
-    return new ResponseEntity<>(itemEntity, HttpStatus.OK);
+    if (itemEntity.getExpiryDate() != null){
+      if (isValidDate(itemEntity.getExpiryDate())){
+        itemRepository.save(itemEntity);
+        this.setProductAndCategory(itemEntity);
+        return new ResponseEntity<>(itemEntity, HttpStatus.OK);
+      }
+      else{
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      }
+    }
+    else{
+      itemRepository.save(itemEntity);
+      this.setProductAndCategory(itemEntity);
+      return new ResponseEntity<>(itemEntity, HttpStatus.OK);
+    }
   }
 
   protected ResponseEntity<?> updateItem(Long id, ItemEntity itemEntity){
@@ -113,5 +125,15 @@ public class ItemService {
     else{
       itemRepository.delete(item);
     }
+    }
+
+  private boolean isValidDate(String date){
+    try{
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      LocalDate parsedDate = LocalDate.parse(date, formatter);
+      return true;
+    } catch(Exception Ex){
+      return false;
+    } 
   }
 }
