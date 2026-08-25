@@ -10,8 +10,8 @@ import dev.meetuco.homey_be.Category.CategoryRepository;
 
 @SpringBootApplication
 public class HomeyBeApplication {
-	private static final String defaultCategoryName = "Default";
-	private static final String defaultCategoryColor = "#ffffff";
+	private static final String DEFAULT_CATEGORY_NAME = "Default";
+	private static final String DEFAULT_CATEGORY_COLOR = "#ffffff";
 
 	public static void main(String[] args) {
 		SpringApplication.run(HomeyBeApplication.class, args);
@@ -21,10 +21,10 @@ public class HomeyBeApplication {
 	public CommandLineRunner seedDefaultCategory(CategoryRepository categoryRepository){
 
 		return args -> {
-			if (!categoryRepository.existsByNameIgnoreCase(defaultCategoryName)) {
+			if (!categoryRepository.existsByNameIgnoreCase(DEFAULT_CATEGORY_NAME)) {
 				CategoryEntity defaultCategory = new CategoryEntity();
-				defaultCategory.setName(defaultCategoryName);
-				defaultCategory.setColor(defaultCategoryColor);
+				defaultCategory.setName(DEFAULT_CATEGORY_NAME);
+				defaultCategory.setColor(DEFAULT_CATEGORY_COLOR);
 				categoryRepository.save(defaultCategory);
 			}
 		};
